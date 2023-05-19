@@ -3,7 +3,7 @@ package covid.application.api.entidade;
 import jakarta.persistence.*;
 
 @Entity
-public class Localidade {
+public class Cidade {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,9 +28,7 @@ public class Localidade {
         this.longitude = longitude;
     }
 
-    public Localidade() {
-
-    }
+    public Cidade() {
 
     public String getCidade() {
         return cidade;
@@ -72,7 +70,11 @@ public class Localidade {
         this.longitude = longitude;
     }
 
-    public long getId() {
-        return id;
+    public Estado getEstado() {
+        return estado;
+    }
+
+    public void setEstado(Estado estado) {
+        this.estado = estado;
     }
 }
