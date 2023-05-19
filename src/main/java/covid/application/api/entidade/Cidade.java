@@ -27,6 +27,7 @@ public class Cidade {
         this.dataInsercao = dataInsercao;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.estado = estado;
     }
 
     public Cidade() {
