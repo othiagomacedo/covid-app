@@ -16,6 +16,13 @@ public class Estado {
 
     String sigla;
 
+    @ManyToOne
+    @JoinColumn(name = "pais_id")
+    private Pais pais;
+
+    @OneToMany(mappedBy = "estado")
+    private List<Cidade> cidades;
+
     public Estado(String nome, String sigla) {
         this.nome = nome;
         this.sigla = sigla;
