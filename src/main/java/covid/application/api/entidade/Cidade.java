@@ -18,9 +18,12 @@ public class Cidade {
 
     private String longitude;
 
-    public Localidade(String cidade, String provincia, String dataInsercao, String latitude, String longitude) {
-        this.cidade = cidade;
-        this.provincia = provincia;
+    @ManyToOne
+    @JoinColumn(name = "estado_id")
+    private Estado estado;
+
+    public Cidade(String nome, String dataInsercao, String latitude, String longitude, Estado estado) {
+        this.nome = nome;
         this.dataInsercao = dataInsercao;
         this.latitude = latitude;
         this.longitude = longitude;
