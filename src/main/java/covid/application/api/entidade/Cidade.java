@@ -36,16 +36,16 @@ public class Cidade {
         return cidade;
     }
 
-    public void setCidade(String cidade) {
-        this.cidade = cidade;
+    public long getId() {
+        return id;
     }
 
-    public String getProvincia() {
-        return provincia;
+    public String getNome() {
+        return nome;
     }
 
-    public void setProvincia(String provincia) {
-        this.provincia = provincia;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
     public String getDataInsercao() {
