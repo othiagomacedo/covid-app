@@ -15,6 +15,9 @@ public class Pais {
 
     private String nome;
 
+    @OneToMany(mappedBy = "pais")
+    private List<Estado> estados;
+
     public Pais(String sigla, String nome) {
         this.sigla = sigla;
         this.nome = nome;
