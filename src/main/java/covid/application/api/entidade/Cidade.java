@@ -32,8 +32,6 @@ public class Cidade {
 
     public Cidade() {
 
-    public String getCidade() {
-        return cidade;
     }
 
     public long getId() {
