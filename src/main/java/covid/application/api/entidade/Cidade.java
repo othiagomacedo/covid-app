@@ -9,9 +9,7 @@ public class Cidade {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private String cidade;
-
-    private String provincia;
+    private String nome;
 
     @Column(name = "data_insercao")
     private String dataInsercao;
