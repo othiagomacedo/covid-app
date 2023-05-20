@@ -29,6 +29,7 @@ public class ConfirmadosController {
                                                       HttpServletRequest request){
 
         Print.request(request);
+        return ConfirmadosService.obterConfimadosEstadoByData(new DadosBuscaLocalidade(nome_estado,data_inicial,data_final));
     }
 
     @GetMapping("/pais={nome_pais}/{data_inicial}&{data_final}")
@@ -38,6 +39,7 @@ public class ConfirmadosController {
                                                     HttpServletRequest request){
 
         Print.request(request);
+        return ConfirmadosService.obterConfimadosPaisByData(new DadosBuscaLocalidade(nome_pais,data_inicial,data_final));
     }
 
 
