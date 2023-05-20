@@ -11,4 +11,16 @@ public class ConfirmadosService {
 
         return ResponseEntity.ok().build();
     }
+
+    public static ResponseEntity obterConfimadosEstadoByData(DadosBuscaLocalidade dados){
+        if (dados.nomeLocalidade().trim().length() == 2){
+
+        }
+        return ResponseEntity.ok().build();
+    }
+
+    public static ResponseEntity obterConfimadosPaisByData(DadosBuscaLocalidade dados){
+
+        return ResponseEntity.ok().build();
+    }
 }
