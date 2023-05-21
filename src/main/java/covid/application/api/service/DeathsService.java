@@ -1,13 +1,13 @@
 package covid.application.api.service;
 
-import covid.application.api.records.DadosBuscaLocalidade;
+import covid.application.api.modelos.records.DadosBuscaLocalidade;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
 public class DeathsService {
 
-    public static ResponseEntity obterDeathCidadeByData(DadosBuscaLocalidade dados){
+    public static ResponseEntity obterDeathByData(DadosBuscaLocalidade dados){
 
         return ResponseEntity.ok().build();
     }
