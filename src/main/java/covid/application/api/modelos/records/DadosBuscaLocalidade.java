@@ -1,4 +1,4 @@
-package covid.application.api.records;
+package covid.application.api.modelos.records;
 
 import covid.application.api.anotations.Data;
 

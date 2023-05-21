@@ -1,4 +1,4 @@
-package covid.application.api.entidade;
+package covid.application.api.modelos.entidade;
 
 import jakarta.persistence.*;
 
