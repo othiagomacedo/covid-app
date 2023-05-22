@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 public class CovidDadosService {
 
     public static ResponseEntity obterDadosByData(DadosBuscaLocalidade dados){
+        //
 
         return ResponseEntity.ok().build();
     }

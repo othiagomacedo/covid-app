@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class CovidDadosController {
 
     Print print = new Print(CovidDadosController.class);
-
     @GetMapping("/{tipoDadosCovid}/{nomeLocal}/{dataInicial}&{dataFinal}")
     public ResponseEntity obterDadosByData(@PathVariable("tipoDadosCovid") @Pattern(regexp = "CONFIRMADOS|MORTOS|RECUPERADOS") Covid tipoDadosCovid,
                                            @PathVariable String nomeLocal,
