@@ -20,7 +20,7 @@ public record DadosPaisesSigla(
             }
         }
 
-        return new DadosPaisesSigla(nome, sigla);
+        return new DadosPaisesSigla( nome, sigla);
     }
 }
 

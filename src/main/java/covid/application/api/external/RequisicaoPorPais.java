@@ -8,7 +8,7 @@ import covid.application.api.modelos.records.DadosRespostaReportPais;
 
 public class RequisicaoPorPais{
 
-    public static DadosRespostaReportPais obterDados(DadosReportBuscaDataSigla dadosRecord) throws Exception {
+    public static DadosRespostaReportPais obterDadosPorDataSigla(DadosReportBuscaDataSigla dadosRecord) throws Exception {
         String url = null;
         DadosRespostaReportPais resposta = null;
 
