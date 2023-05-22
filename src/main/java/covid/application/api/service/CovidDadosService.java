@@ -5,11 +5,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ConfirmadosService {
+public class CovidDadosService {
 
-    public static ResponseEntity obterConfimadosByData(DadosBuscaLocalidade dados){
+    public static ResponseEntity obterDadosByData(DadosBuscaLocalidade dados){
 
         return ResponseEntity.ok().build();
     }
-
 }
