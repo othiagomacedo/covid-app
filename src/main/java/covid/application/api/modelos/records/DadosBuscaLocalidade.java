@@ -1,11 +1,12 @@
 package covid.application.api.modelos.records;
 
 import covid.application.api.anotations.Data;
-import covid.application.api.modelos.enums.TipoLocalidade;
+import covid.application.api.modelos.enums.Covid;
 
 public record DadosBuscaLocalidade(
 
-        TipoLocalidade tipoLocalidade,
+        Covid tipoDadosCovid,
+
         String nomeLocalidade,
 
         @Data
