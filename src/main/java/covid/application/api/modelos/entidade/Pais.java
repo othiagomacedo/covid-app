@@ -2,8 +2,6 @@ package covid.application.api.modelos.entidade;
 
 import jakarta.persistence.*;
 
-import java.util.List;
-
 @Entity
 public class Pais {
 
@@ -15,8 +13,6 @@ public class Pais {
 
     private String nome;
 
-    @OneToMany(mappedBy = "pais")
-    private List<Estado> estados;
 
     public Pais(String sigla, String nome) {
         this.sigla = sigla;

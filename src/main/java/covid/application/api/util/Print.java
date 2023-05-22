@@ -1,6 +1,5 @@
 package covid.application.api.util;
 
-import covid.application.api.controller.ConfirmadosController;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,11 +8,14 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class Print {
+    private static Logger LOG;
 
-    private static Logger LOG = LoggerFactory.getLogger(ConfirmadosController.class);
+    public Print(Class classe){
+         LOG = LoggerFactory.getLogger(classe);
+    }
 
     //Exibir as requests recebidas no Controller
-    public static void request(HttpServletRequest request){
+    public void request(HttpServletRequest request){
         String resp ="Requisicao solicitada: ["+request.getMethod().toUpperCase()+"] -> "+request.getRequestURL().toString();
 
         String params = request.getParameterMap().entrySet().stream()
@@ -24,7 +26,7 @@ public class Print {
         if (params.length() > 0) LOG.info("Parametros da requisição: "+ params);
     }
 
-    public static void requestAndRecord(HttpServletRequest request, Record dados){
+    public void requestAndRecord(HttpServletRequest request, Record dados){
         String resposta ="Requisicao solicitada: ["+request.getMethod().toUpperCase()+"] -> "+request.getRequestURL().toString();
 
         String params = request.getParameterMap().entrySet().stream()
