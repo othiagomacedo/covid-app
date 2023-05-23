@@ -13,7 +13,7 @@ CREATE TABLE historico_pais (
 
 CREATE TABLE pais (
       id SERIAL PRIMARY KEY,
-      sigla VARCHAR(5),
+      sigla VARCHAR(5) UNIQUE,
       nome VARCHAR(50)
 );
 
