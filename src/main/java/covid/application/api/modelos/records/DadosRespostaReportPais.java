@@ -1,16 +1,13 @@
 package covid.application.api.modelos.records;
 
 public record DadosRespostaReportPais(
+        String sigla,
+
         String data,
         String ultUpdate,
-        int confirmados,
-        int confirmadosDiff,
-        int mortes,
-        int mortesDiff,
-        int recuperados,
-        int recuperadosDiff,
-        int ativos,
-        int ativosDiff,
+        long confirmados,
+        long mortes,
+        long recuperados,
         double taxaFatalidade
 ) {
 }
