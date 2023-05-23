@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface PaisRepository extends JpaRepository<Pais, Long> {
-    @Query("SELECT p FROM Pais p WHERE p.nome = :nome")
+    @Query("SELECT p FROM Pais p WHERE p.nome like :nome")
     Optional<Pais> findByNome(String nome);
 
     @Query("SELECT p FROM Pais p WHERE p.sigla = :sigla")
