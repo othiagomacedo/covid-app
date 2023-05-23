@@ -21,6 +21,12 @@ public class PaisController {
         this.pais = pais;
     }
 
+    @GetMapping
+    public ResponseEntity obterTodosPaises(HttpServletRequest request) throws Exception {
+        print.request(request);
+        return pais.getTodosPaisesCadastrados();
+    }
+
     @GetMapping("/nome={nome}")
     public ResponseEntity obterPaisByNome(@PathVariable String nome, HttpServletRequest request) throws Exception {
         print.request(request);
@@ -28,7 +34,7 @@ public class PaisController {
     }
 
     @GetMapping("/sigla={sigla}")
-    public ResponseEntity obterPaisBySigla(@PathVariable String sigla, HttpServletRequest request){
+    public ResponseEntity obterPaisBySigla(@PathVariable String sigla, HttpServletRequest request) throws Exception{
         print.request(request);
         return pais.obterPaisBySigla(sigla);
     }
