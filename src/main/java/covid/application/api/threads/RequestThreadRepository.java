@@ -11,6 +11,10 @@ public class RequestThreadRepository {
         return lista;
     }
 
+    public static void limparLista(){
+        lista.clear();
+    }
+
     public static void addLista(String resultado){
         lista.add(resultado);
     }
