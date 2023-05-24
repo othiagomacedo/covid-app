@@ -1,9 +1,13 @@
 package covid.application.api.modelos.records;
 
+import covid.application.api.anotations.Sigla;
+
 import java.lang.reflect.Field;
 
 public record DadosPaisesSigla(
         String nome,
+
+        @Sigla
         String sigla
 ) {
     public static <T extends Record> DadosPaisesSigla obterCampos(T generico) throws Exception {
