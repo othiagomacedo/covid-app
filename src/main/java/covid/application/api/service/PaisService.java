@@ -1,7 +1,7 @@
 package covid.application.api.service;
 
 import covid.application.api.external.Requests;
-import covid.application.api.external.RequisicaoPorPais;
+import covid.application.api.util.CriarRecords;
 import covid.application.api.modelos.entidade.Pais;
 import covid.application.api.modelos.enums.Requisicao;
 import covid.application.api.modelos.records.DadosPaisesSigla;
@@ -35,7 +35,7 @@ public class PaisService {
 
             LOG.info("Não encontrei o pais pelo nome "+nome.toUpperCase()+", vou iniciar uma busca na API externa");
             String retorno = Requests.realizarRequest(Requisicao.OBTER_TODOS_PAISES_E_SIGLAS.get());
-            List<DadosPaisesSigla> listaDados = RequisicaoPorPais.montarRecordPaisesSigla(retorno);
+            List<DadosPaisesSigla> listaDados = CriarRecords.montarRecordPaisesSigla(retorno);
 
             for (DadosPaisesSigla dadosP : listaDados){
                 if (dadosP.nome().equalsIgnoreCase(nome) || dadosP.nome().contains(nome)){
@@ -63,6 +63,12 @@ public class PaisService {
 
     public ResponseEntity obterPaisBySigla(String sigla) throws Exception{
         try{
+            //Verifica se sigla existe no banco, se não então é certo que não tenha nenhum historico de pesquisa já salvo
+            if (sigla.length() != 3){
+                LOG.error("A Sigla "+sigla+" está incorreta. Siglas devem conter 3 caracteres.");
+                return ResponseEntity.badRequest().body("A Sigla "+sigla+" está incorreta. Siglas devem conter 3 caracteres.");
+            }
+
             return ResponseEntity.ok(obterPaisBySiglas(sigla));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Pais com sigla "+sigla + " não encontrado.");
@@ -76,7 +82,7 @@ public class PaisService {
         if (paisE.isEmpty()){
             LOG.info("Não encontrei o pais pela Sigla "+sigla.toUpperCase()+", vou iniciar uma busca na API externa");
             String retorno = Requests.realizarRequest(Requisicao.OBTER_TODOS_PAISES_E_SIGLAS.get());
-            List<DadosPaisesSigla> listaDados = RequisicaoPorPais.montarRecordPaisesSigla(retorno);
+            List<DadosPaisesSigla> listaDados = CriarRecords.montarRecordPaisesSigla(retorno);
 
             for (DadosPaisesSigla dadosP : listaDados){
                 if (dadosP.sigla().equalsIgnoreCase(sigla) || dadosP.sigla().contains(sigla)){
