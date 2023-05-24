@@ -14,8 +14,8 @@ public class Requests {
 
     public static String realizarRequest(String urlDaAPI) throws Exception{
         try{
-            LOG.debug("Irei realizar uma requisicao a API externa.");
-            LOG.debug("URL da API externa: " + urlDaAPI);
+            LOG.info("Irei realizar uma requisicao a API externa.");
+            LOG.info("URL da API externa: " + urlDaAPI);
 
             java.net.URL url = new URL(urlDaAPI);
 
@@ -23,7 +23,7 @@ public class Requests {
             connection.setRequestMethod("GET");
 
             int codigoResposta = connection.getResponseCode();
-            LOG.debug("Código da resposta: " + codigoResposta);
+            LOG.info("Código da resposta: " + codigoResposta);
 
             if (codigoResposta == HttpURLConnection.HTTP_OK) {
 
@@ -36,7 +36,7 @@ public class Requests {
                 }
                 br.close();
 
-                LOG.debug("Resposta da API : \n" + resposta);
+                LOG.info("Resposta da API : \n" + resposta);
                 return resposta.toString();
             } else {
                 throw new Exception("Não foi possível realizar a requisicao. ");
