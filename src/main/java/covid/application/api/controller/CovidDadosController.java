@@ -2,7 +2,7 @@ package covid.application.api.controller;
 
 import covid.application.api.modelos.records.DadosBuscaPaisDatas;
 import covid.application.api.modelos.records.DadosReportBuscaDataSigla;
-import covid.application.api.service.CovidDadosService;
+import covid.application.api.service.HistoricoPaisService;
 import covid.application.api.util.Print;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/dados")
 public class CovidDadosController {
 
-    final CovidDadosService covidDados;
+    final HistoricoPaisService covidDados;
 
     Print print = new Print(CovidDadosController.class);
 
-    public CovidDadosController(CovidDadosService covidDados) {
+    public CovidDadosController(HistoricoPaisService covidDados) {
         this.covidDados = covidDados;
     }
 

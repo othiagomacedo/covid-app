@@ -1,7 +1,6 @@
 package covid.application.api.modelos.entidade;
 
-import covid.application.api.anotations.Data;
-import covid.application.api.anotations.DataHora;
+import covid.application.api.annotations.Data;
 import covid.application.api.modelos.records.DadosBuscaPaisDatas;
 import covid.application.api.modelos.records.DadosRespostaReportPais;
 import jakarta.persistence.*;
