@@ -1,4 +1,4 @@
-package covid.application.api.anotations;
+package covid.application.api.annotations;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
@@ -12,9 +12,9 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = {})
-@Pattern(regexp = "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}(\\.\\d+)?", message = "Formato de Data e Hora (Timestamp) inválido. Utilize o formato yyyy-MM-dd HH:mm:ss")
-public @interface DataHora {
-    String message() default "Formato de Data e Hora (Timestamp) inválido. Utilize o formato yyyy-MM-dd HH:mm:ss";
+@Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}", message = "Formato de data inválido. Utilize o formato YYYY-MM-DD.")
+public @interface Data {
+    String message() default "Formato de data inválido. Utilize o formato YYYY-MM-DD.";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }
