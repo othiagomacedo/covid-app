@@ -1,7 +1,7 @@
 package covid.application.api.modelos.records;
 
-import covid.application.api.anotations.Data;
-import covid.application.api.anotations.Sigla;
+import covid.application.api.annotations.Data;
+import covid.application.api.annotations.Sigla;
 
 public record DadosBuscaPaisDatas(
         @Sigla

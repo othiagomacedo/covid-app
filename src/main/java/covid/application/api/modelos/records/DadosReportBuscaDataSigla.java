@@ -1,6 +1,6 @@
 package covid.application.api.modelos.records;
 
-import covid.application.api.anotations.Sigla;
+import covid.application.api.annotations.Sigla;
 
 import java.lang.reflect.Field;
 
