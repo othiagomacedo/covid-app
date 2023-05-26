@@ -22,34 +22,34 @@ All your files and folders are presented as a tree in the file explorer. You can
 
 ### Pela API
 
-Para isso, voce deve usar as requisições HTTP logo abaixo. Cada uma delas tem uma breve explicação de como preencher.
+Para isso, voce deve usar as requisições HTTP logo abaixo.
 
 
 **Obter país pelo nome**
 
-    /api/pais/nome={nome}
+    [GET] /api/pais/nome={nome}
 
 
 **Obter país pela Sigla**
 
-    /api/pais/sigla={sigla}
+    [GET] /api/pais/sigla={sigla}
 
 
 **Obter todos os países disponíveis**
 
-    /api/pais
+    [GET] /api/pais
 
 
 **Obter informações do país pela sigla e data do dia**
 
-    /api/dados/total/{siglaPais}/{data}
+    [GET] /api/dados/total/{siglaPais}/{data}
 
 
 **Obter total do país pela sigla e um período de data**
 
-    /api/dados/totais/{siglaPais}/{dataInicial}&{dataFinal}
+    [GET] /api/dados/totais/{siglaPais}/{dataInicial}&{dataFinal}
 
 
 **Obter benchmark sobre dois países**
 
-    /api/bench/get/{paisSigla1}&{paisSigla2}/{dataInicial}&{dataFinal}/{nomebench}
+    [GET] /api/bench/get/{paisSigla1}&{paisSigla2}/{dataInicial}&{dataFinal}/{nomebench}
