@@ -1,14 +1,13 @@
 package covid.application.api.controller;
 
 import covid.application.api.modelos.records.DadosBuscaBenchmark;
+import covid.application.api.modelos.records.DadosExcluirBench;
 import covid.application.api.service.BenchMarkService;
 import covid.application.api.util.Print;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/bench")
@@ -32,8 +31,33 @@ public class BenchMarkController {
                                          HttpServletRequest request) throws Exception {
 
         print.request(request);
-        return bench.obterBenchmark(new DadosBuscaBenchmark(nomebench,paisSigla1,paisSigla2,dataInicial,dataFinal));
+        return bench.obterBenchmark(new DadosBuscaBenchmark(nomebench, paisSigla1, paisSigla2, dataInicial, dataFinal));
     }
 
+    @GetMapping("/get/all")
+    public ResponseEntity obterTodosBenchmark(HttpServletRequest request) {
+        print.request(request);
+        return bench.obterTodosBenchmarks();
+    }
 
+    @Transactional
+    @PostMapping("/edit")
+    public ResponseEntity editBenchmark(HttpServletRequest request) throws Exception {
+        print.request(request);
+        return bench.editarBenchmark(request);
+    }
+
+    @Transactional
+    @DeleteMapping("/del/nome={nomeBench}")
+    public ResponseEntity apagarBenchmark(@PathVariable String nomeBench, HttpServletRequest request) throws Exception {
+        print.request(request);
+        return bench.deletarBenchPeloNome(new DadosExcluirBench(0, nomeBench));
+    }
+
+    @Transactional
+    @DeleteMapping("/del/id={id}")
+    public ResponseEntity apagarBenchmark(@PathVariable long id, HttpServletRequest request) throws Exception {
+        print.request(request);
+        return bench.deletarBenchPeloId(new DadosExcluirBench(id, ""));
+    }
 }
