@@ -119,4 +119,8 @@ public class HistoricoPais {
     public String getPaisSigla() {
         return paisId.getSigla();
     }
+
+    public long getId() {
+        return id;
+    }
 }
