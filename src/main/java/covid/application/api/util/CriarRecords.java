@@ -2,8 +2,10 @@ package covid.application.api.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import covid.application.api.modelos.entidade.Benchmark;
 import covid.application.api.modelos.entidade.HistoricoPais;
 import covid.application.api.modelos.records.DadosPaisesSigla;
+import covid.application.api.modelos.records.DadosRespostaBenchmark;
 import covid.application.api.modelos.records.DadosRespostaReportPais;
 
 import java.util.ArrayList;
@@ -115,6 +117,25 @@ public class CriarRecords{
         }
 
     }
+
+    public static DadosRespostaBenchmark montarDadosRespostaBenchmark(Benchmark benchmark) throws Exception{
+        DadosRespostaBenchmark dados = new DadosRespostaBenchmark(
+                benchmark.getId(),
+                benchmark.getNomeHistorico(),
+                benchmark.getDataHistorico(),
+                benchmark.getDataIncial(),
+                benchmark.getDataFinal(),
+                benchmark.getConfirmadosDiferenca(),
+                benchmark.getMortesDiferenca(),
+                benchmark.getRecuperadosDiferenca(),
+                montarDadosRespostaReportByHistoricoPais(benchmark.getHistoricoPais1()),
+                montarDadosRespostaReportByHistoricoPais(benchmark.getHistoricoPais2()),
+                true,
+                null
+        );
+        return dados;
+    }
+
 
 
 }
