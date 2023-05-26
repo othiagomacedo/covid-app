@@ -3,6 +3,8 @@ package covid.application.api.util;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Datas {
 
@@ -26,5 +28,12 @@ public class Datas {
         }
 
         return todasDatas;
+    }
+
+    public static boolean isCorreto(String data){
+        String padrao = "\\d{4}-\\d{2}-\\d{2}"; // Expressão regular para o formato yyyy-mm-dd
+        Pattern pattern = Pattern.compile(padrao);
+        Matcher matcher = pattern.matcher(data);
+        return matcher.matches();
     }
 }
