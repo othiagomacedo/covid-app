@@ -1,6 +1,7 @@
 package covid.application.api.controller;
 
 import covid.application.api.modelos.records.DadosBuscaBenchmark;
+import covid.application.api.modelos.records.DadosEdicaoBenchmark;
 import covid.application.api.modelos.records.DadosExcluirBench;
 import covid.application.api.service.BenchMarkService;
 import covid.application.api.util.Print;
@@ -32,6 +33,12 @@ public class BenchMarkController {
 
         print.request(request);
         return bench.obterBenchmark(new DadosBuscaBenchmark(nomebench, paisSigla1, paisSigla2, dataInicial, dataFinal));
+    }
+
+    @GetMapping("/get/id={id}")
+    public ResponseEntity obterBenchmarkByID(@PathVariable long id,HttpServletRequest request) throws Exception {
+        print.request(request);
+        return bench.obterBenchPeloID(id);
     }
 
     @GetMapping("/get/all")
