@@ -2,9 +2,12 @@ package covid.application.api.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import covid.application.api.external.Requests;
 import covid.application.api.modelos.entidade.Benchmark;
 import covid.application.api.modelos.entidade.HistoricoPais;
+import covid.application.api.modelos.enums.Requisicao;
 import covid.application.api.modelos.records.DadosPaisesSigla;
+import covid.application.api.modelos.records.DadosRespEdicaoBenchmark;
 import covid.application.api.modelos.records.DadosRespostaBenchmark;
 import covid.application.api.modelos.records.DadosRespostaReportPais;
 
@@ -136,6 +139,47 @@ public class CriarRecords{
         return dados;
     }
 
+    public static DadosRespostaReportPais obterHistoricoPaisDaAPI(String sigla, String dataInicial, String dataFinal) throws Exception {
 
+        long confirmados = 0;
+        long mortes = 0;
+        long recuperados = 0;
+
+
+        //Gerar a URL que vai buscar na API externa
+        String url = Requisicao.REPORT_TOTAL_DIA_PAIS_POR_DATA_SIGLA.get();
+
+        String url1 = url.replace("{DATA}", dataInicial).replace("{SIGLA}", sigla);
+        String url2 = url.replace("{DATA}", dataFinal).replace("{SIGLA}", sigla);
+
+        String result1 = Requests.realizarRequest(url1);
+        String result2 = Requests.realizarRequest(url2);
+
+        DadosRespostaReportPais dadosPais1 = CriarRecords.montarRecordRespostaDadosPais(sigla, result1, dataFinal);
+        DadosRespostaReportPais dadosPais2 = CriarRecords.montarRecordRespostaDadosPais(sigla, result2, dataFinal);
+
+        //novo calculo da diferenca entre a primeira data com a segunda data
+        confirmados = dadosPais2.confirmados() - dadosPais1.confirmados();
+        mortes = dadosPais2.mortes() - dadosPais1.mortes();
+        recuperados = dadosPais2.recuperados() - dadosPais1.recuperados();
+
+        //Montar os dados no record DadosRespostaReportPais para retorno ao Cliente
+        DadosRespostaReportPais dadosTotal = new DadosRespostaReportPais(
+                sigla,
+                dataInicial,
+                dadosPais2.dataFinal(),
+                dadosPais2.ultUpdate(),
+                confirmados < 0 ? confirmados *= -1 : confirmados,
+                mortes < 0 ? mortes *= -1 : mortes,
+                recuperados < 0 ? recuperados *= -1 : recuperados,
+                (mortes / (double) confirmados) * 100
+        );
+
+        return dadosTotal;
+    }
+
+    public static DadosRespEdicaoBenchmark obterRespostaEdicaoBenchmark(Benchmark benchmark){
+        return new DadosRespEdicaoBenchmark(benchmark.getId(), benchmark.getNomeHistorico(), true,null);
+    }
 
 }

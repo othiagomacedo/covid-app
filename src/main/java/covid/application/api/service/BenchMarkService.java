@@ -81,13 +81,13 @@ public class BenchMarkService {
         }
 
         //Verifica as Datas
-        if (!Datas.isCorreto(dataInicial)){
-            LOG.error("Data "+dataInicial+" não está correta. o Formato correto é yyyy-mm-dd");
-            return ResponseEntity.badRequest().body("Data "+dataInicial+" não está correta. o Formato correto é yyyy-mm-dd");
+        if (!Datas.isCorreto(dataInicial)) {
+            LOG.error("Data " + dataInicial + " não está correta. o Formato correto é yyyy-mm-dd");
+            return ResponseEntity.badRequest().body("Data " + dataInicial + " não está correta. o Formato correto é yyyy-mm-dd");
         }
-        if (!Datas.isCorreto(dataFinal)){
-            LOG.error("Data "+dataInicial+" não está correta. o Formato correto é yyyy-mm-dd");
-            return ResponseEntity.badRequest().body("Data "+dataFinal+" não está correta. o Formato correto é yyyy-mm-dd");
+        if (!Datas.isCorreto(dataFinal)) {
+            LOG.error("Data " + dataInicial + " não está correta. o Formato correto é yyyy-mm-dd");
+            return ResponseEntity.badRequest().body("Data " + dataFinal + " não está correta. o Formato correto é yyyy-mm-dd");
         }
 
         //Verifica se existe algum benchmark igual ao requisitado
@@ -186,8 +186,8 @@ public class BenchMarkService {
                 bench.delete(be);
                 LOG.info("Benchmark deletado com sucesso.");
                 return ResponseEntity.ok("Benchmark de id " + id + "deletado com sucesso.");
-            } else{
-                return ResponseEntity.badRequest().body("Benhchmark de id " + id +" não existe.");
+            } else {
+                return ResponseEntity.badRequest().body("Benhchmark de id " + id + " não existe.");
             }
         } catch (Exception e) {
             LOG.error("Erro ao tentar deletar benchmark.", e);
@@ -195,27 +195,86 @@ public class BenchMarkService {
         return ResponseEntity.badRequest().body("Erro em deletar benchmark, por favor tente novamente.");
     }
 
-    public ResponseEntity editarBenchmark(HttpServletRequest request) throws Exception {
+    public ResponseEntity editarBenchmark(DadosEdicaoBenchmark edit) throws Exception {
         LOG.info("Inicio da edição do benchmark");
-        //Desseralizar o JSON recebido
-        StringBuilder stringBuilder = new StringBuilder();
-        String json;
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()))){
-            LOG.info("Vou buscar ler e obter JSON da requisicao.");
-            String line;
-            while ((line = br.readLine()) != null) {
-                stringBuilder.append(line);
+        long id = edit.id();
+        String nomeBench = edit.nomeBench();
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            //Verifica se existe Bench pelo id
+            if (!seExisteBenchmarkPeloID(id)) {
+                LOG.info("Identificado o benchmark no banco. Vou dar sequencia na edição.");
+            } else {
+                return ResponseEntity.badRequest().body("Benchmark de ID " + id + " não existe no banco. Se preferir, crie um com os mesmos dados de edição.");
             }
 
-            // Aqui está o JSON como uma string
-            json = stringBuilder.toString();
+            //Verifica se existe pais com a sigla, se nao realiza a persistencia do mesmo
+            String siglaPais1 = edit.siglaPais1();
+            String siglaPais2 = edit.siglaPais2();
+            String dataInicial = edit.dataInicial();
+            String dataFinal = edit.dataFinal();
 
-        } catch (IOException e) {
-            LOG.error("Não foi possível obter o JSON da requisição.",e);
-            throw e;
+            Pais paisAux1 = obterPaisSeExisteOuNao(siglaPais1);
+            Pais paisAux2 = obterPaisSeExisteOuNao(siglaPais2);
+
+            //Verifica se tem historico para o país já solicitado, se não cria um historico e usa na edição
+            HistoricoPais paisSave1;
+            HistoricoPais paisSave2;
+
+            if (seExisteHistoricoSalvoParaPais(paisAux1, dataInicial, dataFinal)) {
+                LOG.info("Não existe um histórico para o país " + siglaPais1 + " , então vou gerar um e salvar o mesmo no banco local.");
+                LOG.info("Vou obter o historico do país de sigla " + siglaPais1 + "na API.");
+                DadosRespostaReportPais dadosRes1 = CriarRecords.obterHistoricoPaisDaAPI(siglaPais1, dataInicial, dataFinal);
+                paisSave1 = historico.save(new HistoricoPais(dadosRes1, paisAux1));
+                LOG.info("Historico do país " + siglaPais1 + " salvo com sucesso e disponível para este Benchmark editado");
+            } else {
+                LOG.info("Já existe um histórico para o país " + siglaPais1 + " de mesma data, logo vou usar o mesmo.");
+                paisSave1 = historico.findHistoricoPais(paisAux1, dataInicial, dataFinal).get();
+            }
+
+            if (seExisteHistoricoSalvoParaPais(paisAux2, dataInicial, dataFinal)) {
+                LOG.info("Não existe um histórico para o país " + siglaPais2 + " , então vou gerar um e salvar o mesmo no banco local.");
+                LOG.info("Vou obter o historico do país de sigla " + siglaPais2 + "na API.");
+                DadosRespostaReportPais dadosRes2 = CriarRecords.obterHistoricoPaisDaAPI(siglaPais2, dataInicial, dataFinal);
+                paisSave2 = historico.save(new HistoricoPais(dadosRes2, paisAux2));
+                LOG.info("Historico do país " + siglaPais2 + " salvo com sucesso e disponível para este Benchmark");
+            } else {
+                LOG.info("Já existe um histórico para o país " + siglaPais2 + " de mesma data, logo vou usar o mesmo.");
+                paisSave2 = historico.findHistoricoPais(paisAux2, dataInicial, dataFinal).get();
+            }
+
+            //Obter o benchmark solicitado para a edicao
+            Benchmark ben = bench.findById(edit.id()).get();
+
+            long confirmadosDiferenca = paisSave2.getConfirmados() - paisSave1.getConfirmados();
+            long mortesDiferenca = paisSave2.getMortes() - paisSave1.getMortes();
+            long recuperadosDiferenca = paisSave2.getRecuperados() - paisSave1.getRecuperados();
+
+
+            //Usar os historicos agora persistidos no banco para esta edição
+            ben.setNomeHistorico(edit.nomeBench());
+            ben.setHistoricoPais1(paisSave1);
+            ben.setHistoricoPais2(paisSave2);
+            ben.setDataHistorico(sdf.format(date));
+            ben.setDataIncial(dataInicial);
+            ben.setDataFinal(dataFinal);
+            ben.setConfirmadosDiferenca(confirmadosDiferenca < 0 ? confirmadosDiferenca *= -1 : confirmadosDiferenca);
+            ben.setMortesDiferenca(mortesDiferenca < 0 ? mortesDiferenca *= -1 : mortesDiferenca);
+            ben.setRecuperadosDiferenca(recuperadosDiferenca < 0 ? recuperadosDiferenca *= -1 : recuperadosDiferenca);
+
+            LOG.info("Benchmark editado. Vou tentar persistir o mesmo.");
+            Benchmark benchm = bench.save(ben);
+
+            DadosRespEdicaoBenchmark dadosResposta = CriarRecords.obterRespostaEdicaoBenchmark(benchm);
+            LOG.info("Benchmark de nome " + dadosResposta.nomeBench() + " editado e salvo.");
+            return ResponseEntity.ok(dadosResposta);
+
+        } catch (Exception e) {
+            LOG.error("Houve um erro ao tentar editar e persistir o benchmark.", e);
+            DadosRespEdicaoBenchmark dados = new DadosRespEdicaoBenchmark(id, nomeBench, false,"Houve um erro ao tentar editar e persistir o benchmark. "+ e.getMessage());
+            return ResponseEntity.badRequest().body(dados);
         }
-
-        return ResponseEntity.badRequest().body("Erro ao editar benchmark");
     }
 
     /**
@@ -235,33 +294,33 @@ public class BenchMarkService {
             Pais paisAux2 = obterPaisSeExisteOuNao(siglaPais2);
 
             //Verifica se datas estão corretas
-            if(!Datas.isCorreto(pais1.dataInicial()) || !Datas.isCorreto(pais1.dataFinal())){
-                throw new Exception("Não vou persistir esse Benchmark porque o país de "+siglaPais1+" não tem informações de data, provavelmente não tem informações sobre esse país");
+            if (!Datas.isCorreto(pais1.dataInicial()) || !Datas.isCorreto(pais1.dataFinal())) {
+                throw new Exception("Não vou persistir esse Benchmark porque o país de " + siglaPais1 + " não tem informações de data, provavelmente não tem informações sobre esse país");
             }
 
-            if(!Datas.isCorreto(pais2.dataInicial()) || !Datas.isCorreto(pais2.dataFinal())){
-                throw new Exception("Não vou persistir esse Benchmark porque o país de "+siglaPais1+" não tem informações de data, provavelmente não tem informações sobre esse país");
+            if (!Datas.isCorreto(pais2.dataInicial()) || !Datas.isCorreto(pais2.dataFinal())) {
+                throw new Exception("Não vou persistir esse Benchmark porque o país de " + siglaPais1 + " não tem informações de data, provavelmente não tem informações sobre esse país");
             }
 
             //Salvar os dois historicos pais
             HistoricoPais paisSave1;
             HistoricoPais paisSave2;
-            if (seExisteHistoricoSalvoParaPais(paisAux1, pais1.dataInicial(),pais1.dataFinal())){
-                LOG.info("Não existe um histórico para o país "+siglaPais1+" , então vou salvar o mesmo no banco local.");
+            if (seExisteHistoricoSalvoParaPais(paisAux1, pais1.dataInicial(), pais1.dataFinal())) {
+                LOG.info("Não existe um histórico para o país " + siglaPais1 + " , então vou salvar o mesmo no banco local.");
                 paisSave1 = historico.save(new HistoricoPais(pais1, paisAux1));
-                LOG.info("Historico do país "+ siglaPais1+ " salvo com sucesso e disponível para este Benchmark");
+                LOG.info("Historico do país " + siglaPais1 + " salvo com sucesso e disponível para este Benchmark");
             } else {
-                LOG.info("Já existe um histórico para o país "+siglaPais1+" de mesma data, logo vou usar o mesmo.");
-                paisSave1 = historico.findHistoricoPais(paisAux1, pais1.dataInicial(),pais1.dataFinal()).get();
+                LOG.info("Já existe um histórico para o país " + siglaPais1 + " de mesma data, logo vou usar o mesmo.");
+                paisSave1 = historico.findHistoricoPais(paisAux1, pais1.dataInicial(), pais1.dataFinal()).get();
             }
 
-            if (seExisteHistoricoSalvoParaPais(paisAux2, pais2.dataInicial(),pais2.dataFinal())){
-                LOG.info("Não existe um histórico para o país "+siglaPais2+" , então vou salvar o mesmo no banco local.");
+            if (seExisteHistoricoSalvoParaPais(paisAux2, pais2.dataInicial(), pais2.dataFinal())) {
+                LOG.info("Não existe um histórico para o país " + siglaPais2 + " , então vou salvar o mesmo no banco local.");
                 paisSave2 = historico.save(new HistoricoPais(pais2, paisAux2));
-                LOG.info("Historico do país "+ siglaPais2+ " salvo com sucesso e disponível para este Benchmark");
+                LOG.info("Historico do país " + siglaPais2 + " salvo com sucesso e disponível para este Benchmark");
             } else {
-                LOG.info("Já existe um histórico para o país "+siglaPais2+" de mesma data, logo vou usar o mesmo.");
-                paisSave2 = historico.findHistoricoPais(paisAux2, pais2.dataInicial(),pais2.dataFinal()).get();
+                LOG.info("Já existe um histórico para o país " + siglaPais2 + " de mesma data, logo vou usar o mesmo.");
+                paisSave2 = historico.findHistoricoPais(paisAux2, pais2.dataInicial(), pais2.dataFinal()).get();
             }
 
             //Salvar o benchmark
@@ -332,7 +391,7 @@ public class BenchMarkService {
 
     public boolean seExisteHistoricoSalvoParaPais(Pais pais, String dataInicial, String dataFinal) throws Exception {
         try {
-            var hpAux = historico.findHistoricoPais(pais,dataInicial,dataFinal);
+            var hpAux = historico.findHistoricoPais(pais, dataInicial, dataFinal);
             return hpAux.isEmpty();
         } catch (Exception e) {
             LOG.error("Não foi possível verificar se existe historico de País");
@@ -384,5 +443,6 @@ public class BenchMarkService {
         }
         return false;
     }
+
 
 }
