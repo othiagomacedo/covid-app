@@ -43,6 +43,18 @@ public class BenchMarkService {
         verifica = new Verificar();
     }
 
+    public ResponseEntity obterBenchPeloID(long id){
+        try {
+            Benchmark benchResp = bench.findById(id).get();
+            DadosRespostaBenchmark dados = CriarRecords.montarDadosRespostaBenchmark(benchResp);
+            return ResponseEntity.ok(dados);
+        } catch (Exception e) {
+            LOG.error("Benchmark de id " + id + " não existe", e);
+            LOG.info("Vou devolver uma resposta ao cliente que benchmark de id " + id + " não existe");
+            return ResponseEntity.badRequest().body("Bench de id " + id + " não existe");
+        }
+    }
+
     public ResponseEntity obterBenchmark(DadosBuscaBenchmark dadosBusca) throws Exception {
         String nomeBench = dadosBusca.nomeBench();
         String paisSigla1 = dadosBusca.paisSigla1();
