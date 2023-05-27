@@ -48,10 +48,16 @@ public class BenchMarkController {
     }
 
     @Transactional
-    @PostMapping("/edit")
-    public ResponseEntity editBenchmark(HttpServletRequest request) throws Exception {
+    @PostMapping("/edit/{id}/{paisSigla1}&{paisSigla2}/{dataInicial}&{dataFinal}/{nomebench}")
+    public ResponseEntity editBenchmark(@PathVariable long id,
+                                        @PathVariable String paisSigla1,
+                                        @PathVariable String paisSigla2,
+                                        @PathVariable String dataInicial,
+                                        @PathVariable String dataFinal,
+                                        @PathVariable String nomebench,
+                                        HttpServletRequest request) throws Exception {
         print.request(request);
-        return bench.editarBenchmark(request);
+        return bench.editarBenchmark(new DadosEdicaoBenchmark(id,nomebench,paisSigla1, paisSigla2, dataInicial, dataFinal));
     }
 
     @Transactional
