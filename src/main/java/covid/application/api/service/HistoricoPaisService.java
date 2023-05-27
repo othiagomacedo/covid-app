@@ -141,12 +141,13 @@ public class HistoricoPaisService {
         long mortes = 0;
         long recuperados = 0;
 
-
+        //Gerar a URL que vai buscar na API externa
         String url = Requisicao.REPORT_TOTAL_DIA_PAIS_POR_DATA_SIGLA.get();
 
         String url1 = url.replace("{DATA}", dadosBusca.dataInicial()).replace("{SIGLA}", sigla);
         String url2 = url.replace("{DATA}", dadosBusca.dataFinal()).replace("{SIGLA}", sigla);
 
+        //Montar a lista que vai executar na API
         listaRun.add(new RequestThread(url1));
         listaRun.add(new RequestThread(url2));
 
