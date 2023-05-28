@@ -40,4 +40,10 @@ public class CovidDadosController {
         print.request(request);
         return covidDados.obterDadosPaisPorFaixaDatas(new DadosBuscaPaisDatas(siglaPais, dataInicial, dataFinal));
     }
+
+    @GetMapping("/all")
+    public ResponseEntity obterTodosHistoricoPaises(HttpServletRequest request) throws Exception {
+        print.request(request);
+        return covidDados.obterTodosHistoricoPaises();
+    }
 }
