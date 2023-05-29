@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/bench")
+@CrossOrigin(origins = "*")
 public class BenchMarkController {
 
 

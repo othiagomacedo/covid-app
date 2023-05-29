@@ -120,10 +120,15 @@ public class HistoricoPaisService {
                     .body("A Sigla " + sigla + " está incorreta. Siglas devem conter 3 caracteres.");
         }
 
-        if (!Datas.isSequencial(dataInicial, dataFinal)) {
-            LOG.error("A data " + dadosBusca.dataInicial() + " deve ser anterior a data " + dadosBusca.dataFinal());
-            return ResponseEntity.badRequest()
-                    .body("A data " + dadosBusca.dataInicial() + " deve ser anterior a data " + dadosBusca.dataFinal());
+        try {
+            if (!Datas.isSequencial(dataInicial, dataFinal)) {
+                LOG.error("A data " + dadosBusca.dataInicial() + " deve ser anterior a data " + dadosBusca.dataFinal());
+                return ResponseEntity.badRequest()
+                        .body("A data " + dadosBusca.dataInicial() + " deve ser anterior a data " + dadosBusca.dataFinal());
+            }
+        } catch (Exception e) {
+            LOG.error("Ocorreu um erro ao tentar realizar a verificação de datas.", e);
+            return ResponseEntity.badRequest().body("Ocorreu um erro ao tentar realizar a verificação de datas. "+e.getMessage());
         }
 
         LOG.info("Irei verificar se pais de sigla " + sigla

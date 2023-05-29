@@ -1,3 +1,9 @@
+CREATE TABLE pais (
+    id SERIAL PRIMARY KEY,
+    sigla VARCHAR(5) UNIQUE,
+    nome VARCHAR(50)
+);
+
 CREATE TABLE historico_pais (
     id SERIAL PRIMARY KEY,
     data_inicial VARCHAR(30),
@@ -8,12 +14,6 @@ CREATE TABLE historico_pais (
     ultimo_update VARCHAR(30),
     percentual_fatalidade DOUBLE PRECISION,
     pais_id BIGINT REFERENCES pais(id)
-);
-
-CREATE TABLE pais (
-    id SERIAL PRIMARY KEY,
-    sigla VARCHAR(5) UNIQUE,
-    nome VARCHAR(50)
 );
 
 CREATE TABLE historico_benchmark (

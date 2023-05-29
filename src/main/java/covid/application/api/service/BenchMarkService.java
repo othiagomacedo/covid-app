@@ -104,17 +104,17 @@ public class BenchMarkService {
             //Montar benchmark e persistir no banco de dados local
             LOG.info("Não há um benchmark previamente salvo, logo gerarei um e enviarei ao cliente.");
             String url = Requisicao.REPORT_TOTAL_DIA_PAIS_POR_DATA_SIGLA.get();
+            
+            //Verificar se já existe o histórico dos países no banco salvo com mesmo tipo
+            LOG.info("Vou verificar se já existe o histórico dos países");
+            
+            String jsonPaisResp1 = null;
+            String jsonPaisResp2 = null;
 
-            String url1 = url.replace("{DATA}", dadosBusca.dataInicial()).replace("{SIGLA}", paisSigla1);
-            String url2 = url.replace("{DATA}", dadosBusca.dataFinal()).replace("{SIGLA}", paisSigla2);
-
-            String jsonPaisResp1 = Requests.realizarRequest(url1);
-            String jsonPaisResp2 = Requests.realizarRequest(url2);
+            DadosRespostaReportPais dadosPais1 = obterHistoricoPelaSiglaDatas(paisSigla1, dataInicial, dataFinal);
+            DadosRespostaReportPais dadosPais2 = obterHistoricoPelaSiglaDatas(paisSigla2, dataInicial, dataFinal);   
 
             LOG.info("Obtido os dois históricos dos países do benchmark, continuarei montando o benchmark");
-
-            DadosRespostaReportPais dadosPais1 = CriarRecords.montarRecordRespostaDadosPais(paisSigla1, jsonPaisResp1, dataFinal);
-            DadosRespostaReportPais dadosPais2 = CriarRecords.montarRecordRespostaDadosPais(paisSigla2, jsonPaisResp2, dataFinal);
 
             long confirmadosDiferenca = dadosPais1.confirmados() - dadosPais2.confirmados();
             long mortesDiferenca = dadosPais1.mortes() - dadosPais2.mortes();
@@ -280,6 +280,43 @@ public class BenchMarkService {
     /**
      * VERIFICAÇÕES E UTILS DA CLASSE
      */
+
+    public DadosRespostaReportPais obterHistoricoPelaSiglaDatas(String sigla1, String dataInicial, String dataFinal) throws Exception{
+        String url = Requisicao.REPORT_TOTAL_DIA_PAIS_POR_DATA_SIGLA.get();
+        String jsonPaisResp1 = null;
+        String jsonPaisResp2 = null;
+        Pais paisAux1 = obterPaisSeExisteOuNao(sigla1);
+        DadosRespostaReportPais dadosPais1 = null;
+
+        if(seExisteHistoricoSalvoParaPais(paisAux1, dataInicial, dataFinal)){
+            LOG.info("Não existe histórico para país de sigla " + sigla1 + " e datas " + dataInicial + " a " + dataFinal + ". Vou realizar request para obter o histórico.");
+            String urlWDataInicial = url.replace("{DATA}", dataInicial).replace("{SIGLA}", sigla1);
+            String urlWDataFinal = url.replace("{DATA}", dataFinal).replace("{SIGLA}", sigla1);
+            jsonPaisResp1 = Requests.realizarRequest(urlWDataInicial);
+            jsonPaisResp2 = Requests.realizarRequest(urlWDataFinal);
+            DadosRespostaReportPais dados1 = CriarRecords.montarRecordRespostaDadosPais(sigla1, jsonPaisResp1, dataFinal);
+            DadosRespostaReportPais dados2 = CriarRecords.montarRecordRespostaDadosPais(sigla1, jsonPaisResp2, dataFinal);
+            long confirm = dados2.confirmados() - dados1.confirmados();
+            long mortes = dados2.mortes() - dados1.mortes();
+            long recuperados = dados2.recuperados() - dados1.recuperados();
+            dadosPais1 = new DadosRespostaReportPais(
+                sigla1,
+                dataInicial,
+                dataFinal,
+                dados1.ultUpdate(),
+                confirm < 0 ? confirm *= (-1) : confirm,
+                mortes < 0 ? mortes *= (-1) : mortes,
+                recuperados < 0 ? recuperados *= (-1) : recuperados,
+                dados1.taxaFatalidade()
+            );
+            return dadosPais1;
+        } else {
+            LOG.info("Já existe histórico para país de sigla " + sigla1 + " e datas " + dataInicial + " a " + dataFinal + ". Vou buscar no banco e usar neste Benchmark.");
+            var historicoFound = historico.findHistoricoPais(paisAux1, dataInicial, dataFinal);
+            return CriarRecords.montarDadosRespostaReportByHistoricoPais(historicoFound.get());
+        }
+    }
+
 
     public DadosRespostaBenchmark saveBenchmark(DadosRespostaBenchmark benchmark, DadosRespostaReportPais pais1, DadosRespostaReportPais pais2) throws Exception {
         DadosRespostaBenchmark dados;
