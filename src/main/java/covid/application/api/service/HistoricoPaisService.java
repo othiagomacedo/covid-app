@@ -231,8 +231,9 @@ public class HistoricoPaisService {
         }
     }
 
-    private void saveHistPais(DadosBuscaPaisDatas dataBuscas, DadosRespostaReportPais dadosTotal) {
-        Pais paisAux = pais.findBySigla(dadosTotal.sigla()).get();
+    private void saveHistPais(DadosBuscaPaisDatas dataBuscas, DadosRespostaReportPais dadosTotal) throws Exception {
+        Pais paisAux = obterPaisSeExisteOuNao(dadosTotal.sigla());
+        LOG.info("País da sigla "+paisAux.getSigla()+" de nome "+paisAux.getNome()+ " encontrado");
         histPais.save(new HistoricoPais(dataBuscas, dadosTotal, paisAux));
         LOG.info("Salvo histórico do pais " + paisAux.getNome());
     }
@@ -286,6 +287,33 @@ public class HistoricoPaisService {
             return false;
         }
         return true;
+    }
+
+    public Pais obterPaisSeExisteOuNao(String sigla) throws Exception {
+        Pais paisAux2;
+        boolean achouAPI = false;
+        try {
+            paisAux2 = pais.findBySigla(sigla).get();
+            return paisAux2;
+        } catch (Exception e) {
+            LOG.info("País do benchmark de sigla " + sigla + " não existe no banco, logo vou buscar na APi e persistir o mesmo.");
+            //Obter nome e sigla e persistir no banco
+            String retorno = Requests.realizarRequest(Requisicao.OBTER_TODOS_PAISES_E_SIGLAS.get());
+            List<DadosPaisesSigla> listaDados = CriarRecords.montarRecordPaisesSigla(retorno);
+            for (DadosPaisesSigla dadosP : listaDados) {
+                if (dadosP.sigla().equalsIgnoreCase(sigla) || dadosP.sigla().contains(sigla) || dadosP.nome().contains(sigla)) {
+                    LOG.info("Pais encontrado na API Externa! " + sigla + ". O mesmo será persistido no banco local e enviado ao Cliente");
+                    paisAux2 = pais.save(new Pais(dadosP));
+                    achouAPI = true;
+                    return paisAux2;
+                }
+            }
+
+            if (!achouAPI) {
+                throw new Exception("País com sigla " + sigla + " não existe no banco e nem na API externa.");
+            }
+        }
+        return new Pais(sigla, sigla);
     }
 
 }
