@@ -195,6 +195,7 @@ public class HistoricoPaisService {
         // Montar os dados no record DadosRespostaReportPais para retorno ao Cliente
         DadosRespostaReportPais dadosTotal = new DadosRespostaReportPais(
                 sigla,
+                dadosPais2.nomePais(),
                 dataInicial,
                 dadosPais2.dataFinal(),
                 dadosPais2.ultUpdate(),

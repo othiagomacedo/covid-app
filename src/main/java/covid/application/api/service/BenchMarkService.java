@@ -301,6 +301,7 @@ public class BenchMarkService {
             long recuperados = dados2.recuperados() - dados1.recuperados();
             dadosPais1 = new DadosRespostaReportPais(
                 sigla1,
+                paisAux1.getNome(),
                 dataInicial,
                 dataFinal,
                 dados1.ultUpdate(),

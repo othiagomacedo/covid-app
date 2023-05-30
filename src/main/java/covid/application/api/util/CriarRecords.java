@@ -28,6 +28,7 @@ public class CriarRecords{
                         "",
                         "",
                         "",
+                        "",
                         0,
                         0,
                         0,
@@ -36,6 +37,8 @@ public class CriarRecords{
             } else {
                 dados = new DadosRespostaReportPais(
                         sigla,
+                        //Buscar nome aqui
+                        "",
                         dataNode.get("date").asText(),
                         dataNode.get("last_update").asText(),
                         dataNode.get("last_update").asText(),

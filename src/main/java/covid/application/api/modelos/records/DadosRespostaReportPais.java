@@ -7,6 +7,8 @@ public record DadosRespostaReportPais(
         @Sigla
         String sigla,
 
+        String nomePais,
+
         String dataInicial,
 
         String dataFinal,
