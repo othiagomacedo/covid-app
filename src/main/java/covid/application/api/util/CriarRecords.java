@@ -166,12 +166,19 @@ public class CriarRecords{
     }
 
     public static DadosRespostaBenchmark montarDadosRespostaBenchmark(Benchmark benchmark) throws Exception{
+        long totConfirmados = benchmark.getHistoricoPais1().getConfirmados() + benchmark.getHistoricoPais2().getConfirmados();
+        long totMortes = benchmark.getHistoricoPais1().getMortes() + benchmark.getHistoricoPais2().getMortes();
+        long totRecuperados = benchmark.getHistoricoPais1().getRecuperados() + benchmark.getHistoricoPais2().getRecuperados();
+
         DadosRespostaBenchmark dados = new DadosRespostaBenchmark(
                 benchmark.getId(),
                 benchmark.getNomeHistorico(),
                 benchmark.getDataHistorico(),
                 benchmark.getDataIncial(),
                 benchmark.getDataFinal(),
+                totConfirmados,
+                totMortes,
+                totRecuperados,
                 benchmark.getConfirmadosDiferenca(),
                 benchmark.getMortesDiferenca(),
                 benchmark.getRecuperadosDiferenca(),

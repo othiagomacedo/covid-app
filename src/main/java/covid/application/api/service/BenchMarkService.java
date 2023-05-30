@@ -116,6 +116,10 @@ public class BenchMarkService {
 
             LOG.info("Obtido os dois históricos dos países do benchmark, continuarei montando o benchmark");
 
+            long totConfirmados = dadosPais1.confirmados() + dadosPais2.confirmados();
+            long totMortes = dadosPais1.mortes() + dadosPais2.mortes();
+            long totRecuperados = dadosPais1.recuperados() + dadosPais2.recuperados();
+
             long confirmadosDiferenca = dadosPais1.confirmados() - dadosPais2.confirmados();
             long mortesDiferenca = dadosPais1.mortes() - dadosPais2.mortes();
             long recuperadosDiferenca = dadosPais1.recuperados() - dadosPais2.recuperados();
@@ -126,6 +130,9 @@ public class BenchMarkService {
                     sdf.format(date),
                     dataInicial,
                     dataFinal,
+                    totConfirmados,
+                    totMortes,
+                    totRecuperados,
                     confirmadosDiferenca < 0 ? confirmadosDiferenca * (-1L) : confirmadosDiferenca,
                     mortesDiferenca < 0 ? mortesDiferenca * (-1L) : mortesDiferenca,
                     recuperadosDiferenca < 0 ? recuperadosDiferenca * (-1L) : recuperadosDiferenca,
@@ -388,6 +395,9 @@ public class BenchMarkService {
                     benchmark.dataHoraBenchmark(),
                     benchmark.dataInicial(),
                     benchmark.dataFinal(),
+                    benchmark.confirmadosTotal(),
+                    benchmark.mortesTotal(),
+                    benchmark.recuperadosTotal(),
                     benchmark.confirmadosDiferenca(),
                     benchmark.mortesDiferenca(),
                     benchmark.recuperadosDiferenca(),
