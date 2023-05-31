@@ -60,6 +60,10 @@ public class HistoricoPais {
     }
 
 
+    public Pais getPaisId() {
+        return paisId;
+    }
+
     public String getDataInicial() {
         return dataInicial;
     }

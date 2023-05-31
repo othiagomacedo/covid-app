@@ -120,6 +120,9 @@ public class HistoricoPaisService {
                     .body("A Sigla " + sigla + " está incorreta. Siglas devem conter 3 caracteres.");
         }
 
+        //Se sigla certa, então país está correto
+        Pais paisNovo = obterPaisSeExisteOuNao(sigla);
+
         try {
             if (!Datas.isSequencial(dataInicial, dataFinal)) {
                 LOG.error("A data " + dadosBusca.dataInicial() + " deve ser anterior a data " + dadosBusca.dataFinal());
@@ -134,7 +137,8 @@ public class HistoricoPaisService {
         LOG.info("Irei verificar se pais de sigla " + sigla
                 + " existe no banco local. Se não buscarei na API externa e persistirei localmente.");
         if (!sePaisExisteSalvoLocalPelaSigla(sigla)) {
-
+            LOG.warn("País não encontrado para a sigla " + sigla +". Vamos requisitar da API e gerar um País");
+            paisNovo = obterPaisSeExisteOuNao(sigla);
         } else {
             LOG.info("Pais de sigla " + sigla + " encontrado, vou continuar com a solicitação de dados para este país");
         }
@@ -180,9 +184,9 @@ public class HistoricoPaisService {
         List<String> results = RequestThreadRepository.getLista();
         LOG.info("A requisicao obteve " + results.size() + " resultados. Vamos compilar em apenas 1 para o cliente");
 
-        DadosRespostaReportPais dadosPais1 = CriarRecords.montarRecordRespostaDadosPais(sigla, results.get(0),
+        DadosRespostaReportPais dadosPais1 = CriarRecords.montarRecordRespostaDadosPais(paisNovo, results.get(0),
                 dataFinal);
-        DadosRespostaReportPais dadosPais2 = CriarRecords.montarRecordRespostaDadosPais(sigla, results.get(1),
+        DadosRespostaReportPais dadosPais2 = CriarRecords.montarRecordRespostaDadosPais(paisNovo, results.get(1),
                 dataFinal);
 
         RequestThreadRepository.limparLista();

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import covid.application.api.external.Requests;
 import covid.application.api.modelos.entidade.Benchmark;
 import covid.application.api.modelos.entidade.HistoricoPais;
+import covid.application.api.modelos.entidade.Pais;
 import covid.application.api.modelos.enums.Requisicao;
 import covid.application.api.modelos.records.DadosPaisesSigla;
 import covid.application.api.modelos.records.DadosRespEdicaoBenchmark;
@@ -66,6 +67,7 @@ public class CriarRecords{
                         "",
                         "",
                         "",
+                        "",
                         0,
                         0,
                         0,
@@ -74,6 +76,44 @@ public class CriarRecords{
             } else {
                 dados = new DadosRespostaReportPais(
                         sigla,
+                        "",
+                        dataNode.get("date").asText(),
+                        dataFinal,
+                        dataNode.get("last_update").asText(),
+                        dataNode.get("confirmed").asInt(),
+                        dataNode.get("deaths").asInt(),
+                        dataNode.get("recovered").asInt(),
+                        dataNode.get("fatality_rate").asDouble()
+                );
+            }
+            return dados;
+        }catch (Exception e){
+            throw new Exception("Nao foi possível obter Record DadosRespostaReportPais a partir de String",e);
+        }
+    }
+
+    public static DadosRespostaReportPais montarRecordRespostaDadosPais(Pais pais, String respostaRequest, String dataFinal) throws Exception {
+        try{
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(respostaRequest);
+            JsonNode dataNode = jsonNode.get("data");
+            DadosRespostaReportPais dados;
+            if (dataNode.isEmpty()){
+                dados = new DadosRespostaReportPais(
+                        pais.getSigla(),
+                        pais.getNome(),
+                        "",
+                        "",
+                        "",
+                        0,
+                        0,
+                        0,
+                        0
+                );
+            } else {
+                dados = new DadosRespostaReportPais(
+                        pais.getSigla(),
+                        pais.getNome(),
                         dataNode.get("date").asText(),
                         dataFinal,
                         dataNode.get("last_update").asText(),
@@ -92,6 +132,7 @@ public class CriarRecords{
     public static DadosRespostaReportPais montarDadosRespostaReportByHistoricoPais(HistoricoPais hist){
         DadosRespostaReportPais dados = new DadosRespostaReportPais(
                 hist.getPaisSigla(),
+                hist.getPaisId().getNome(),
                 hist.getDataInicial(),
                 hist.getDataFinal(),
                 hist.getUltimoUpdate(),
@@ -142,8 +183,9 @@ public class CriarRecords{
         return dados;
     }
 
-    public static DadosRespostaReportPais obterHistoricoPaisDaAPI(String sigla, String dataInicial, String dataFinal) throws Exception {
+    public static DadosRespostaReportPais obterHistoricoPaisDaAPI(Pais pais, String dataInicial, String dataFinal) throws Exception {
 
+        String sigla = pais.getSigla();
         long confirmados = 0;
         long mortes = 0;
         long recuperados = 0;
@@ -169,6 +211,7 @@ public class CriarRecords{
         //Montar os dados no record DadosRespostaReportPais para retorno ao Cliente
         DadosRespostaReportPais dadosTotal = new DadosRespostaReportPais(
                 sigla,
+                dadosPais2.nomePais(),
                 dataInicial,
                 dadosPais2.dataFinal(),
                 dadosPais2.ultUpdate(),

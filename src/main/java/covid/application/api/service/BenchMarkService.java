@@ -225,7 +225,7 @@ public class BenchMarkService {
             if (seExisteHistoricoSalvoParaPais(paisAux1, dataInicial, dataFinal)) {
                 LOG.info("Não existe um histórico para o país " + siglaPais1 + " , então vou gerar um e salvar o mesmo no banco local.");
                 LOG.info("Vou obter o historico do país de sigla " + siglaPais1 + "na API.");
-                DadosRespostaReportPais dadosRes1 = CriarRecords.obterHistoricoPaisDaAPI(siglaPais1, dataInicial, dataFinal);
+                DadosRespostaReportPais dadosRes1 = CriarRecords.obterHistoricoPaisDaAPI(paisAux1, dataInicial, dataFinal);
                 paisSave1 = historico.save(new HistoricoPais(dadosRes1, paisAux1));
                 LOG.info("Historico do país " + siglaPais1 + " salvo com sucesso e disponível para este Benchmark editado");
             } else {
@@ -236,7 +236,7 @@ public class BenchMarkService {
             if (seExisteHistoricoSalvoParaPais(paisAux2, dataInicial, dataFinal)) {
                 LOG.info("Não existe um histórico para o país " + siglaPais2 + " , então vou gerar um e salvar o mesmo no banco local.");
                 LOG.info("Vou obter o historico do país de sigla " + siglaPais2 + "na API.");
-                DadosRespostaReportPais dadosRes2 = CriarRecords.obterHistoricoPaisDaAPI(siglaPais2, dataInicial, dataFinal);
+                DadosRespostaReportPais dadosRes2 = CriarRecords.obterHistoricoPaisDaAPI(paisAux2, dataInicial, dataFinal);
                 paisSave2 = historico.save(new HistoricoPais(dadosRes2, paisAux2));
                 LOG.info("Historico do país " + siglaPais2 + " salvo com sucesso e disponível para este Benchmark");
             } else {
@@ -294,8 +294,8 @@ public class BenchMarkService {
             String urlWDataFinal = url.replace("{DATA}", dataFinal).replace("{SIGLA}", sigla1);
             jsonPaisResp1 = Requests.realizarRequest(urlWDataInicial);
             jsonPaisResp2 = Requests.realizarRequest(urlWDataFinal);
-            DadosRespostaReportPais dados1 = CriarRecords.montarRecordRespostaDadosPais(sigla1, jsonPaisResp1, dataFinal);
-            DadosRespostaReportPais dados2 = CriarRecords.montarRecordRespostaDadosPais(sigla1, jsonPaisResp2, dataFinal);
+            DadosRespostaReportPais dados1 = CriarRecords.montarRecordRespostaDadosPais(paisAux1, jsonPaisResp1, dataFinal);
+            DadosRespostaReportPais dados2 = CriarRecords.montarRecordRespostaDadosPais(paisAux1, jsonPaisResp2, dataFinal);
             long confirm = dados2.confirmados() - dados1.confirmados();
             long mortes = dados2.mortes() - dados1.mortes();
             long recuperados = dados2.recuperados() - dados1.recuperados();
