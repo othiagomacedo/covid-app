@@ -192,7 +192,7 @@ public class BenchMarkService {
                 Benchmark be = bench.findById(id).get();
                 bench.delete(be);
                 LOG.info("Benchmark deletado com sucesso.");
-                return ResponseEntity.ok("Benchmark de id " + id + "deletado com sucesso.");
+                return ResponseEntity.ok("Benchmark de id " + id + " deletado com sucesso.");
             } else {
                 return ResponseEntity.badRequest().body("Benhchmark de id " + id + " não existe.");
             }
