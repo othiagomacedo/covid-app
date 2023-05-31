@@ -77,7 +77,7 @@ Para isso, voce deve usar as requisições logo abaixo.
 
 **Editar benchmarks**
 
-    [GET] /api/bench/edit/{id}/{paisSigla1}&{paisSigla2}/{dataInicial}&{dataFinal}/{nomebench}
+    [POST] /api/bench/edit/{id}/{paisSigla1}&{paisSigla2}/{dataInicial}&{dataFinal}/{nomebench}
 
 **Deletar benchmark pelo id**
 
